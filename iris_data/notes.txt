@@ -1,0 +1,7 @@
+1b. Data Analysis based on Visualizations
+Implications of data or feature distribution on data analysis:
+From the pair plots, we can observe distinct clusters for different species, especially when considering petal length and petal width. Setosa is clearly separable from Versicolor and Virginica. Versicolor and Virginica show some overlap, but are generally distinguishable. This suggests that these features are highly informative for classifying Iris species. The distributions of features like petal length and width are crucial for separating the species.
+
+Inferences from 1a. i. and ii. - data patterns/trends and their influence on data analysis:
+The correlation heatmap shows strong positive correlations between petal length and petal width, and also between sepal length and petal length/width. This indicates that as one of these features increases, the others tend to increase as well. For example, longer petals tend to be wider. This strong correlation can be useful for predicting one feature from another, as seen in the linear regression task. The distinct clustering in the pair plots confirms that species can be effectively differentiated using these features, making classification tasks relatively straightforward for this dataset.
+

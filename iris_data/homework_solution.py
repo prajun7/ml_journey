@@ -18,7 +18,6 @@ print("\n--- Part 1: Iris Data Visualization ---")
 print("First 5 rows of the Iris dataset:\n", iris_df.head())
 
 # 1a) i) Correlation coefficient - display correlation matrix as heat map
-print("\n1a) i) Correlation Matrix Heatmap")
 plt.figure(figsize=(8, 6))
 sns.heatmap(iris_df.iloc[:, :-1].corr(), annot=True, cmap='coolwarm')
 plt.title('Correlation Matrix of Iris Features')
@@ -26,23 +25,12 @@ plt.savefig('correlation_heatmap.png')
 plt.show()
 
 # 1a) ii) Feature analysis/visualization - display all the color coded features
-print("\n1a) ii) Feature Analysis/Visualization (Pair Plots)")
 sns.pairplot(iris_df, hue='species', palette='viridis')
 plt.suptitle('Pair Plot of Iris Features by Species', y=1.02)
 plt.savefig('pair_plot.png')
 plt.show()
 
-# 1b) Data analysis based on the visualizations
-print("\n1b) Data Analysis based on Visualizations")
-print("\nImplications of data or feature distribution on data analysis:")
-print("From the pair plots, we can observe distinct clusters for different species, especially when considering petal length and petal width. Setosa is clearly separable from Versicolor and Virginica. Versicolor and Virginica show some overlap, but are generally distinguishable. This suggests that these features are highly informative for classifying Iris species. The distributions of features like petal length and width are crucial for separating the species.")
-print("\nInferences from 1a) i) and ii) - data patterns/trends and their influence on data analysis:")
-print("The correlation heatmap shows strong positive correlations between petal length and petal width, and also between sepal length and petal length/width. This indicates that as one of these features increases, the others tend to increase as well. For example, longer petals tend to be wider. This strong correlation can be useful for predicting one feature from another, as seen in the linear regression task. The distinct clustering in the pair plots confirms that species can be effectively differentiated using these features, making classification tasks relatively straightforward for this dataset.")
-
 # --- Part 2: Linear Regression (LR) analysis using sklearn ---
-
-print("\n--- Part 2: Linear Regression (LR) Analysis ---")
-
 # Drop 'petal length' feature and prepare data
 X = iris_df.drop(['petal length (cm)', 'species'], axis=1)
 y = iris_df['petal length (cm)']
