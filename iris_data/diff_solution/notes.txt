@@ -1,0 +1,143 @@
+# Iris Dataset Analysis – Project Notes
+
+---
+
+## Dataset Overview
+
+The Iris dataset is one of the most well-known datasets in machine learning and statistics. It was originally introduced by statistician Ronald Fisher in 1936. The dataset contains **150 samples** from three species of iris flowers: *Setosa*, *Versicolor*, and *Virginica* — 50 samples per species. Each sample has four measured features: **sepal length (cm)**, **sepal width (cm)**, **petal length (cm)**, and **petal width (cm)**. The dataset is loaded directly from the `sklearn.datasets` library using `load_iris()` and converted into a pandas DataFrame for ease of manipulation and visualization.
+
+---
+
+## Question 1a – Data Visualization
+
+### Question 1a-i) Correlation Matrix Heatmap
+
+**What we are doing:**
+A correlation coefficient measures the statistical relationship between two variables. Its value ranges from -1 to +1, where +1 means a perfect positive relationship (both features increase together), -1 means a perfect negative relationship (one increases as the other decreases), and 0 means no linear relationship.
+
+To visualize this, we compute the **correlation matrix** of all four numerical features using `df.corr()` in pandas. This produces a 4×4 matrix where each cell shows the correlation between a pair of features. We then display this matrix as a **heatmap** using the `seaborn.heatmap()` function.
+
+**How the heatmap is generated:**
+The heatmap uses a color gradient (coolwarm colormap) where red represents strong positive correlation, blue represents strong negative correlation, and white represents near-zero correlation. Each cell also displays the numerical correlation value annotated directly on the map for precise reading. The diagonal of the matrix always shows a value of 1.0 because every feature is perfectly correlated with itself.
+
+**What the heatmap tells us:**
+From the Iris dataset, we observe that petal length and petal width have a very high positive correlation (close to +1), meaning flowers with longer petals also tend to have wider petals. Sepal length also shows moderate positive correlation with both petal features. Sepal width, however, shows weak or slightly negative correlation with the other features, indicating it is a relatively independent measurement.
+
+---
+
+### Question 1a-ii) Feature Analysis and Visualization
+
+**What we are doing:**
+We create three types of plots to visualize the distribution and behavior of each individual feature across all three species. All plots are **color-coded by species** (Setosa, Versicolor, Virginica) to allow direct visual comparison.
+
+**Plot 1 – Pairplot (Scatterplot Matrix):**
+A pairplot is generated using `seaborn.pairplot()`. This produces a grid of scatter plots where every feature is plotted against every other feature. Along the diagonal, histograms show the distribution of each individual feature. Each species is assigned a distinct color. This plot is especially powerful because it lets us simultaneously examine all possible feature combinations and identify which feature pairs best separate the three species. For example, petal length vs. petal width produces near-perfect separation between Setosa and the other two species.
+
+**Plot 2 – Feature Distribution Histograms:**
+For each of the four features, we plot overlapping histograms where each bar color represents a different species. This allows us to see how the values of a single feature (e.g., sepal length) are distributed for each species and whether those distributions overlap. Setosa, for instance, tends to cluster at smaller values for petal length and petal width, making it easily distinguishable from the other two species.
+
+**Plot 3 – Boxplots by Species:**
+A boxplot is generated for each feature, grouped by species. The box in each plot shows the interquartile range (middle 50% of data), the line inside the box shows the median, and the whiskers extend to the data range. Outliers are shown as individual points. Boxplots are useful for comparing the central tendency and spread of each feature across species. They also highlight which features show the most separation between species — petal length and petal width show the clearest non-overlapping boxes across all three species.
+
+---
+
+## Question 1b – Data Analysis
+
+**a) Implications of feature distribution on data analysis:**
+From the histograms and boxplots, we observe that the feature distributions for Setosa are well-separated from Versicolor and Virginica, particularly for petal length and petal width. Setosa occupies a distinct and compact range with very little overlap. Versicolor and Virginica, however, show some overlap in their distributions, particularly in sepal length and sepal width, making these two species harder to distinguish using only those features. The sepal width feature shows the most overlap across all three species, suggesting it is the least discriminative feature for classification purposes. This implies that petal measurements are more informative and should be given higher weight in any predictive model.
+
+**b) Inferences from correlation and feature visualization:**
+The heatmap reveals that petal length and petal width are highly correlated, which means including both in a model may introduce redundancy. Sepal width is weakly correlated with all other features, confirming its role as an independent variable. From the pairplot and histograms, we can infer that petal features are the most useful for distinguishing between species. The clear visual cluster separation in the petal length vs. petal width scatter plot suggests that these two features alone could build a strong predictive model. Additionally, the compact, non-overlapping distribution of Setosa across petal features indicates it is linearly separable from the other two species, which would make it the easiest class to predict correctly in any regression or classification task.
+
+---
+
+## Question 2 – Linear Regression Analysis
+
+### Overview of the Approach
+
+Linear Regression is a supervised machine learning technique that models the relationship between a dependent variable (the target we want to predict) and one or more independent variables (the input features). The model learns a linear equation of the form:
+
+```
+petal_length = (c1 × sepal_length) + (c2 × sepal_width) + (c3 × petal_width) + intercept
+```
+
+Where c1, c2, c3 are the **slopes (coefficients)** — these represent how much petal length changes for a one-unit increase in each input feature — and the **intercept** is the baseline value when all inputs are zero.
+
+### Data Preparation
+
+We drop the **petal length** column from the dataset because it is our prediction target. The remaining three features — sepal length, sepal width, and petal width — are used as the input matrix `X`. The petal length column becomes our target vector `y`. We then select a specific sample (index 121) that we will later predict after training, making sure this index is not included in the training data.
+
+### Train/Test Split
+
+We use `train_test_split()` from sklearn to divide the 150 samples into a training set and a test set. A fixed `random_state=42` is used to ensure the split is identical every time the code is run, making results reproducible. Two separate experiments are conducted:
+
+- **Case i:** 30% of samples used for training (45 samples train, 105 samples test)
+- **Case ii:** 80% of samples used for training (120 samples train, 30 samples test)
+
+---
+
+### Question 2 – Case i) Train Size = 30%
+
+**How the model is trained:**
+The model is fit on only 30% of the data (45 samples). This is a relatively small training set, meaning the model has limited exposure to the variety of feature-to-petal-length relationships present in the full dataset. After calling `model.fit(X_train, y_train)`, the model calculates the optimal slope and intercept values that minimize the total squared prediction error on the training data.
+
+**How the prediction is made:**
+Once trained, the model uses the learned equation to predict petal length for new, unseen data. We call `model.predict(X_test)` to generate predictions for all test samples. We also call `model.predict(X[121])` to specifically predict the petal length of sample index 121 using only its sepal length, sepal width, and petal width values. This predicted value is then compared against the actual petal length stored in the dataset for that index.
+
+**Output – LR Parameters:**
+The output includes the slope coefficients for each of the three input features and the intercept term. These together define the regression equation learned from 30% of the data.
+
+**Output – RMSE:**
+Root Mean Squared Error (RMSE) is calculated by taking the square root of the average squared difference between actual and predicted petal lengths across all test samples. A higher RMSE here (compared to Case ii) is expected because the model was trained on less data and has not learned the full range of patterns in the dataset.
+
+---
+
+### Question 2 – Case ii) Train Size = 80%
+
+**How the model is trained:**
+The model is now trained on 80% of the data (120 samples), giving it substantially more information to learn from. With more training samples, the model better captures the linear relationships between sepal/petal measurements across all three species. The same `model.fit()` process is used, but the learned coefficients will be more reliable and generalizable.
+
+**How the prediction is made:**
+The same process is followed — `model.predict()` is used on the test set and on sample index 121. Because the model has learned from more data, its prediction for index 121 is expected to be closer to the actual value.
+
+**Output – LR Parameters:**
+The slope and intercept values will differ slightly from Case i because they are derived from a larger, more representative training set.
+
+**Output – RMSE:**
+The RMSE is expected to be lower in this case, reflecting that more training data leads to better predictions with less error.
+
+---
+
+### Question 2 – Actual vs. Predicted Scatter Plot
+
+For both cases, a scatter plot is generated where:
+- The **X-axis** represents the **actual petal length** values from the dataset (the true ground truth)
+- The **Y-axis** represents the **predicted petal length** values output by the trained regression model
+- Each dot represents one test sample
+- A **red dashed diagonal line** represents perfect prediction (where predicted = actual exactly)
+- Dots that fall **close to the diagonal line** indicate accurate predictions
+- Dots that fall **far from the diagonal line** indicate large prediction errors
+- The **orange dot** specifically highlights sample index 121, showing its actual vs. predicted value
+
+---
+
+### Question 2b – Which Case Was Better and Why?
+
+**Case ii (80% training) is the better model.** This is evidenced by its lower RMSE value compared to Case i. The fundamental reason is that machine learning models improve with more training data. When trained on only 30% of the samples, the model sees a limited variety of sepal-petal combinations and may not learn the true underlying linear relationship well — this leads to higher prediction error. When trained on 80%, the model is exposed to a much broader range of samples across all three species, allowing it to build a more accurate and robust regression equation. As a result, the predicted petal length for index 121 in Case ii is closer to the actual petal length, and the overall spread of points around the diagonal line in the scatter plot is tighter, confirming better model performance.
+
+---
+
+## Summary Table
+
+| Metric | Case i (30% Train) | Case ii (80% Train) |
+|---|---|---|
+| Training samples | ~45 | ~120 |
+| Test samples | ~105 | ~30 |
+| Predicted petal length (index 121) | See console output | See console output |
+| Actual petal length (index 121) | Same for both | Same for both |
+| RMSE | Higher | Lower |
+| Performance | Weaker | Better |
+
+---
+
+*All visualizations are generated using matplotlib and seaborn. All regression analysis is performed using sklearn's LinearRegression module. Dataset source: sklearn.datasets.load_iris / UCI Machine Learning Repository.*

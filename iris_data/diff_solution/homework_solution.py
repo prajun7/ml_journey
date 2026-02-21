@@ -43,7 +43,7 @@ sns.heatmap(
     corr_matrix,
     annot=True,          # Show correlation values in each cell
     fmt=".2f",           # Format to 2 decimal places
-    cmap="coolwarm",     # Color scheme: blue=negative, red=positive correlation
+    cmap="viridis",
     linewidths=0.5,
     square=True
 )
