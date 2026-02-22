@@ -155,10 +155,3 @@ model_ii, rmse_ii, pred_ii = run_linear_regression(
 print("COMPARISON SUMMARY")
 print(f"  Case i  (30% train) RMSE: {rmse_i:.4f}")
 print(f"  Case ii (80% train) RMSE: {rmse_ii:.4f}")
-
-if rmse_ii < rmse_i:
-    print(f"\n  ✔ Case ii (80% train) is BETTER — lower RMSE ({rmse_ii:.4f} < {rmse_i:.4f})")
-    print("  More training data allows the model to learn feature patterns better,")
-    print("  leading to lower prediction error.")
-else:
-    print(f"\n  ✔ Case i (30% train) is BETTER — lower RMSE ({rmse_i:.4f} < {rmse_ii:.4f})")
