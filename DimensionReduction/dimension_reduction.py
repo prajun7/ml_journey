@@ -46,13 +46,16 @@ indian_mat = loadmat('indianR.mat')
 gth_mat    = loadmat('indian_gth.mat')
 
 # Extract arrays — variable names per homework spec: X and gth
-X_raw = indian_mat['X']          # 2D: samples x bands (or 3D: H x W x bands)
+X_raw = indian_mat['X']          # shape: (bands, pixels) = (202, 21025)
 y_raw = gth_mat['gth'].flatten() # 1D ground-truth labels
 
 # If X_raw is 3D (H x W x bands), reshape to 2D (pixels x bands)
 if X_raw.ndim == 3:
     H, W, B = X_raw.shape
-    X_raw = X_raw.reshape(-1, B)   # flatten spatial dims -> (H*W, B)
+    X_raw = X_raw.reshape(-1, B)
+elif X_raw.shape[0] < X_raw.shape[1]:
+    # Data stored as (bands, pixels) — transpose to (pixels, bands)
+    X_raw = X_raw.T
 
 # Remove background pixels (label == 0)
 mask      = y_raw != 0
