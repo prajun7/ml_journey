@@ -25,10 +25,7 @@ from sklearn.base import clone
 import warnings
 warnings.filterwarnings('ignore')
 
-# =============================================================================
 # SECTION 0: DATA LOADING
-# =============================================================================
-
 # ---- Load Iris Dataset (from scikit-learn) -----------------------------------
 print("Loading Iris dataset...")
 iris = load_iris()
@@ -65,18 +62,14 @@ unique_classes_indian = np.unique(y_indian)
 n_classes_indian      = len(unique_classes_indian)
 print(f"  Indian Pines: X={X_indian.shape}, {n_classes_indian} classes (background removed)")
 
-# =============================================================================
 # SECTION 0b: STANDARDIZE DATA (zero mean, unit variance — required for PCA/LDA)
-# =============================================================================
 scaler_iris   = StandardScaler()
 X_iris_scaled = scaler_iris.fit_transform(X_iris)
 
 scaler_indian   = StandardScaler()
 X_indian_scaled = scaler_indian.fit_transform(X_indian)
 
-# =============================================================================
 # QUESTION 1a-i  PCA EXPLAINED VARIANCE PLOTS
-# =============================================================================
 print("\n[1a-i] Computing PCA explained variance ...")
 
 # ---- PCA on Iris (all 4 components) -----------------------------------------
@@ -141,9 +134,7 @@ K_indian_ev = cev_indian[K_indian - 1] * 100
 print(f"\n  [K Choice] Iris:         K={K_iris}  ({K_iris_ev:.1f}% variance explained)")
 print(f"  [K Choice] Indian Pines: K={K_indian} ({K_indian_ev:.1f}% variance explained)")
 
-# =============================================================================
 # QUESTION 1a-ii  PCA 2D VISUALIZATION (first 2 PCs)
-# =============================================================================
 print("\n[1a-ii] PCA 2D visualization ...")
 
 pca_2d = PCA(n_components=2)
@@ -189,9 +180,7 @@ plt.savefig('Figure2_PCA_2D_Visualization.png', dpi=150, bbox_inches='tight')
 plt.show()
 print("  Saved: Figure2_PCA_2D_Visualization.png")
 
-# =============================================================================
 # QUESTION 1a-iii  LDA 2D VISUALIZATION (first 2 LDs)
-# =============================================================================
 print("\n[1a-iii] LDA 2D visualization ...")
 
 # LDA n_components <= min(n_classes-1, n_features)
@@ -234,10 +223,7 @@ plt.savefig('Figure3_LDA_2D_Visualization.png', dpi=150, bbox_inches='tight')
 plt.show()
 print("  Saved: Figure3_LDA_2D_Visualization.png")
 
-# =============================================================================
 # QUESTION 2: CLASSIFICATION SETUP
-# =============================================================================
-
 # Training sizes to evaluate
 training_sizes     = [0.10, 0.20, 0.30, 0.40, 0.50]
 training_sizes_pct = [int(t * 100) for t in training_sizes]
@@ -298,10 +284,7 @@ def plot_accuracy_vs_training(results, title, filename, training_sizes_pct):
     plt.show()
     print(f"  Saved: {filename}")
 
-# =============================================================================
 # QUESTION 2a  REDUCE DATA THEN CLASSIFY
-# =============================================================================
-
 # ---- Apply PCA (K components) -----------------------------------------------
 pca_K_iris    = PCA(n_components=K_iris)
 X_iris_pca    = pca_K_iris.fit_transform(X_iris_scaled)
@@ -324,10 +307,8 @@ print(f"  Iris   PCA: {X_iris.shape[1]}D -> {K_iris}D | "
 print(f"  Indian PCA: {X_indian.shape[1]}D -> {K_indian}D | "
       f"LDA: {X_indian.shape[1]}D -> {K_lda_indian}D")
 
-# =============================================================================
 # CASE i — WITH DIMENSIONALITY REDUCTION
 # PCA + Classification (Figure 4 & 5)
-# =============================================================================
 print("\n[Case i] PCA + Classification ...")
 
 print("  -> Iris  + PCA")
@@ -361,9 +342,7 @@ plot_accuracy_vs_training(
     f'Figure 7. Classification Accuracy with LDA (K={K_lda_indian}) – Indian Pines Dataset',
     'Figure7_IndianPines_LDA_Classification.png', training_sizes_pct)
 
-# =============================================================================
 # CASE ii — WITHOUT DIMENSIONALITY REDUCTION (Figure 8 & 9)
-# =============================================================================
 print("\n[Case ii] Classification WITHOUT dimensionality reduction ...")
 
 print("  -> Iris (raw features)")
@@ -380,10 +359,8 @@ plot_accuracy_vs_training(
     'Figure 9. Classification Accuracy without Dim. Reduction – Indian Pines Dataset',
     'Figure9_IndianPines_NoDR_Classification.png', training_sizes_pct)
 
-# =============================================================================
 # CASE i  CLASS-WISE ACCURACY TABLE
 # Indian Pines, PCA-reduced data, 30% training size, all 3 classifiers
-# =============================================================================
 print("\n[Table 1] Class-wise accuracy – Indian Pines, PCA, 30% training ...")
 
 TRAIN_SIZE_TABLE = 0.30   # fixed at 30% per homework requirement
@@ -471,9 +448,7 @@ plt.savefig('Table1_Classwise_Accuracy_IndianPines_PCA.png', dpi=150,
 plt.show()
 print("  Saved: Table1_Classwise_Accuracy_IndianPines_PCA.png")
 
-# =============================================================================
 # SECTION 3: SUMMARY PRINTOUT
-# =============================================================================
 print("\n" + "="*65)
 print("SUMMARY — Overall accuracy at 30% training size")
 print("="*65)
